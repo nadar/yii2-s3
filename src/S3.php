@@ -7,7 +7,7 @@ use yii\base\InvalidConfigException;
 use Aws\S3\S3Client;
 
 /**
- * S3 Amazone Component.
+ * S3 Amazon Component.
  * 
  * @property \Aws\S3\S3Client $client The s3 client.
  * @author Basil Suter <basil@nadar.io>
@@ -54,7 +54,7 @@ class S3 extends Component
     private $_client = null;
 
     /**
-     * Get the amazone client library.
+     * Get the Amazon client library.
      * 
      * @return \Aws\S3\S3Client
      */
