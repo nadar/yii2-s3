@@ -72,11 +72,14 @@ class S3 extends Component
      * 
      * @param string $filePath
      * @param string $override Wehther to check if the file exists or not.
+     * @param string $key The file name which will be used as identifier on the storage system.
      * @return boolean|\Aws\Result
      */
-    public function upload($filePath, $override = false)
+    public function upload($filePath, $override = false, $key = null)
     {
-        $key = pathinfo($filePath, PATHINFO_BASENAME);
+        if (empty($key)) {
+            $key = pathinfo($filePath, PATHINFO_BASENAME);
+        }
         
         if (!$override && $this->find($key)) {
             return false;
