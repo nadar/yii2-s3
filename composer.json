@@ -23,5 +23,10 @@
             "indielab\\yii2s3\\" : "src/",
             "indielab\\yii2s3\\tests\\" : "tests/"
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     }
 }
