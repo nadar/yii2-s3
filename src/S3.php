@@ -4,6 +4,7 @@ namespace indielab\yii2s3;
 
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use Aws\S3\S3Client;
 
 /**
@@ -71,26 +72,29 @@ class S3 extends Component
      * Upload a file source to the Bucket.
      * 
      * @param string $filePath
-     * @param string $override Wehther to check if the file exists or not.
-     * @param string $key The file name which will be used as identifier on the storage system.
+     * @param array $options You can provide options to the putObject method of the S3Client.
+     * - override: Wehther to check if the file exists or not.
+     * - Key: The file name which will be used as identifier on the storage system.
+     * - CacheControl: Define a max-age ability like `max-age=172800`
      * @return boolean|\Aws\Result
      */
-    public function upload($filePath, $override = false, $key = null)
+    public function upload($filePath, array $options = [])
     {
-        if (empty($key)) {
-            $key = pathinfo($filePath, PATHINFO_BASENAME);
-        }
+        $override = ArrayHelper::remove($options, 'override', false);
+        $key = ArrayHelper::remove($options, 'Key', pathinfo($filePath, PATHINFO_BASENAME));
         
         if (!$override && $this->find($key)) {
             return false;
         }
         
-        $put = $this->client->putObject([
+        $configure = ArrayHelper::merge([
             'ACL' => $this->acl,
             'Bucket' => $this->bucket,
             'Key' => $key,
             'SourceFile' => $filePath,
-        ]);
+        ], $options);
+        
+        $put = $this->client->putObject($configure);
         
         if ($put) {
             return $put['ObjectURL'];

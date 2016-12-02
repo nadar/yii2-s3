@@ -24,5 +24,6 @@
         <const name="BUCKET" value="mybucket" />
         <const name="KEY" value="myawskey" />
         <const name="SECRET" value="myawssecret" />
+        <const name="REGION" value="eu-central-1" />
     </php>
 </phpunit>

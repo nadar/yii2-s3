@@ -27,3 +27,13 @@ Where file.jpg will be used as the key of the uploading file. Now in order to ge
 ```php
 $url = Yii::$app->s3->url('file.jpg');
 ```
+
+## Configure Put Object
+
+```php
+$client->upload(__DIR__ . '/testfile.txt', [
+    'override' => true,
+    'Key' => 'CacheControlTestFile.txt',
+    'CacheControl' => 'max-age=' . strtotime('+1 year') 
+]);
+```
