@@ -1,6 +1,16 @@
 # Yii 2 Amazon S3 Component
 
-Add to your configuration
+This component allows you to work with the amazon AWS S3 buckets for uploading and finding files.
+
+## Installation
+
+Add the the package to your composer file:
+
+```sh
+composer require indielab/yii2s3
+```
+
+Add the component to your application configuration file:
 
 ```php
 'components' => [
@@ -16,6 +26,8 @@ Add to your configuration
 ]
 ```
 
+## Usage
+
 Using the component in order to upload a file:
 
 ```php
@@ -28,12 +40,14 @@ Where file.jpg will be used as the key of the uploading file. Now in order to ge
 $url = Yii::$app->s3->url('file.jpg');
 ```
 
-## Configure Put Object
+### Configure Uploading
+
+You can also provide more options to the uploading configuration method:
 
 ```php
-$client->upload(__DIR__ . '/testfile.txt', [
-    'override' => true,
-    'Key' => 'CacheControlTestFile.txt',
-    'CacheControl' => 'max-age=' . strtotime('+1 year') 
+Yii::$app->s3->upload('path/to/the/file.jpg', [
+    'override' => true, // whether existing file should be overriden or not
+    'Key' => 'CacheControlTestFile.txt', // Define a specific name for the file instead of the source file name
+    'CacheControl' => 'max-age=' . strtotime('+1 year')  // Add cache controler options
 ]);
 ```
