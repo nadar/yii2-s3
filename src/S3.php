@@ -62,7 +62,12 @@ class S3 extends Component
     public function getClient()
     {
         if ($this->_client === null) {
-            $this->_client = new S3Client(['version' => 'latest', 'region' => $this->region, 'credentials' => ['key' => $this->key, 'secret' => $this->secret]]);
+            $this->_client = new S3Client([
+                'version' => 'latest',
+                'region' => $this->region,
+                'credentials' => ['key' => $this->key, 'secret' => $this->secret]
+            ]);
+            $this->_client->registerStreamWrapper();
         }
         
         return $this->_client;
@@ -127,5 +132,16 @@ class S3 extends Component
         } catch (\Aws\S3\Exception\S3Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * Returns a stream for the given file
+     *
+     * @param string $key The file name like "xyz.jpg"
+     * @return resource
+     */
+    public function fileSystemStream($key)
+    {
+        return fopen("s3://{$this->bucket}/{$key}", "r");
     }
 }
