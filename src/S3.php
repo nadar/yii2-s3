@@ -144,4 +144,15 @@ class S3 extends Component
     {
         return fopen("s3://{$this->bucket}/{$key}", "r");
     }
+    
+    /**
+     * Delete a given file
+     */
+    public function delete($fileName)
+    {
+        return (bool) $this->client->deleteObject([
+            'Bucket' => $this->bucket,
+            'Key' => $fileName,
+        ]);
+    }
 }
