@@ -44,7 +44,7 @@ class S3 extends Component
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -53,7 +53,7 @@ class S3 extends Component
         }
     }
 
-    private $_client = null;
+    private ?S3Client $_client = null;
 
     /**
      * Get the Amazon client library.
@@ -77,14 +77,12 @@ class S3 extends Component
     /**
      * Upload a file source to the Bucket.
      *
-     * @param string $filePath
-     * @param array $options You can provide options to the putObject method of the S3Client.
+     * @param array<String> $options You can provide options to the putObject method of the S3Client.
      * - override: Wehther to check if the file exists or not.
      * - Key: The file name which will be used as identifier on the storage system.
      * - CacheControl: Define a max-age ability like `max-age=172800`
-     * @return boolean|\Aws\Result
      */
-    public function upload($filePath, array $options = [])
+    public function upload(string $filePath, array $options = []): false|string
     {
         $override = ArrayHelper::remove($options, 'override', false);
         $key = ArrayHelper::remove($options, 'Key', pathinfo($filePath, PATHINFO_BASENAME));
@@ -100,10 +98,17 @@ class S3 extends Component
             'SourceFile' => $filePath,
         ], $options);
 
-        $put = $this->client->putObject($configure);
+        try {
+            $put = $this->client->putObject($configure);
 
-        if ($put) {
-            return $put['ObjectURL'];
+            $objectUrl = $put['ObjectURL'] ?? false;
+
+            if ($objectUrl) {
+                return (string) $objectUrl;
+            }
+
+        } catch (S3Exception) {
+
         }
 
         return false;
@@ -111,22 +116,17 @@ class S3 extends Component
 
     /**
      * Get the url from a key file based on the bucket and region.
-     *
-     * @param string $key The key file.
-     * @return string
      */
-    public function url($key)
+    public function url(string $key): string
     {
         return $this->client->getObjectUrl($this->bucket, $key);
     }
 
     /**
      * See whether a key exists or not.
-     *
-     * @param string $key
-     * @return \Aws\Result|boolean
+     * @return \Aws\Result<array>|false
      */
-    public function find($key)
+    public function find(string $key): \Aws\Result|false
     {
         try {
             return $this->client->getObject(['Bucket' => $this->bucket, 'Key' => $key]);
@@ -139,9 +139,9 @@ class S3 extends Component
      * Returns a stream for the given file
      *
      * @param string $key The file name like "xyz.jpg"
-     * @return resource
+     * @return resource|false
      */
-    public function fileSystemStream($key)
+    public function fileSystemStream(string $key)
     {
         return fopen("s3://{$this->bucket}/{$key}", "r");
     }
@@ -149,7 +149,7 @@ class S3 extends Component
     /**
      * Delete a given file
      */
-    public function delete($fileName)
+    public function delete(string $fileName): bool
     {
         return (bool) $this->client->deleteObject([
             'Bucket' => $this->bucket,
