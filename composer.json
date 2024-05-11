@@ -1,32 +1,50 @@
 {
-    "name" : "indielab/yii2s3",
-    "description" : "Yii 2 S3 Component",
-    "type" : "yii2-extension",
-    "keywords" : ["s3"],
-    "homepage" : "https://github.com/indielab",
-    "authors" : [
+    "name": "indielab/yii2s3",
+    "description": "Yii 2 S3 Component",
+    "type": "yii2-extension",
+    "keywords": [
+        "s3",
+        "yii2"
+    ],
+    "homepage": "https://github.com/indielab",
+    "authors": [
         {
-            "name" : "Basil Suter",
-            "email" : "basil@nadar.io",
-            "homepage" : "https://github.com/nadar"
+            "name": "Nadar",
+            "email": "git@nadar.io",
+            "homepage": "https://github.com/nadar"
         }
     ],
     "require": {
+        "php" : "^8.2",
         "aws/aws-sdk-php": "^3.0",
-        "yiisoft/yii2" : "^2.0"
+        "yiisoft/yii2": "^2.0"
     },
     "require-dev": {
-        "phpunit/phpunit" : "~5.0"
+        "friendsofphp/php-cs-fixer": "^3.40",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^11.1",
+        "rector/rector": "^1.0"
     },
-    "autoload" : {
-        "psr-4" : {
-            "indielab\\yii2s3\\" : "src/",
-            "indielab\\yii2s3\\tests\\" : "tests/"
+    "autoload": {
+        "psr-4": {
+            "indielab\\yii2s3\\": "src/",
+            "indielab\\yii2s3\\tests\\": "tests/"
         }
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0.x-dev"
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
         }
+    ],
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
+    },
+    "scripts": {
+        "phpstan": "vendor/bin/phpstan -v",
+        "phpcsfixer": "vendor/bin/php-cs-fixer fix",
+        "rector": "vendor/bin/rector"
     }
 }

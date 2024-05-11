@@ -3,3 +3,5 @@
 /.buildpath
 /.project
 /phpunit.xml
+.tmp
+.php-cs-fixer.cache
