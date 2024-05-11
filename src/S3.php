@@ -2,6 +2,7 @@
 
 namespace indielab\yii2s3;
 
+use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -129,7 +130,7 @@ class S3 extends Component
     {
         try {
             return $this->client->getObject(['Bucket' => $this->bucket, 'Key' => $key]);
-        } catch (\Aws\S3\Exception\S3Exception) {
+        } catch (S3Exception) {
             return false;
         }
     }
@@ -154,5 +155,28 @@ class S3 extends Component
             'Bucket' => $this->bucket,
             'Key' => $fileName,
         ]);
+    }
+
+    /**
+     * Returns the file size in bytes or false if the file does not exist or an error eccured.
+     */
+    public function fileSize(string $fileKey): int|false
+    {
+        try {
+            $result = $this->client->headObject([
+                'Bucket' => $this->bucket,
+                'Key' => $fileKey,
+            ]);
+
+            // Return the size of the file
+            $bytes = $result['ContentLength'] ?? false; // Size in bytes
+
+            if ($bytes) {
+                return (int) $bytes;
+            }
+        } catch (S3Exception) {
+        }
+
+        return false;
     }
 }
