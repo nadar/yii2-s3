@@ -149,7 +149,7 @@ class S3 extends Component
 
     public function findObjectContent(string $key): false|string
     {
-        $stream = $this->getStream($key);
+        $stream = $this->findObjectStream($key);
 
         if ($stream) {
             return $stream->getContents();
