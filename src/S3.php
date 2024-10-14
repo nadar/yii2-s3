@@ -4,6 +4,7 @@ namespace indielab\yii2s3;
 
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
+use GuzzleHttp\Psr7\Stream;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
@@ -133,6 +134,28 @@ class S3 extends Component
         } catch (S3Exception) {
             return false;
         }
+    }
+
+    public function findObjectStream(string $key): false|Stream
+    {
+        $o = $this->find($key);
+
+        if ($o) {
+            return $o['Body'];
+        }
+
+        return false;
+    }
+
+    public function findObjectContent(string $key): false|string
+    {
+        $stream = $this->getStream($key);
+
+        if ($stream) {
+            return $stream->getContents();
+        }
+
+        return false;
     }
 
     /**
