@@ -39,7 +39,10 @@ class S3 extends Component
     public $secret = null;
 
     /**
-     * @var string Access contorl: Valid values: private|public-read|public-read-write|authenticated-read|aws-exec-read|bucket-owner-read|bucket-owner-full-control
+     * @var string|false Access control: Valid values: private|public-read|public-read-write|authenticated-read|aws-exec-read|bucket-owner-read|bucket-owner-full-control
+     *
+     * Set this to `false` to omit the ACL parameter entirely when uploading. This is required for buckets that have
+     * ACLs disabled (Object Ownership set to "Bucket owner enforced"), where providing an ACL would fail the request.
      */
     public $acl = 'public-read';
 
@@ -94,12 +97,17 @@ class S3 extends Component
             return false;
         }
 
-        $configure = ArrayHelper::merge([
-            'ACL' => $this->acl,
+        $base = [
             'Bucket' => $this->bucket,
             'Key' => $key,
             'SourceFile' => $filePath,
-        ], $options);
+        ];
+
+        if ($this->acl !== false) {
+            $base['ACL'] = $this->acl;
+        }
+
+        $configure = ArrayHelper::merge($base, $options);
 
         try {
             $put = $this->client->putObject($configure);

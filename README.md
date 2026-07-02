@@ -51,3 +51,20 @@ Yii::$app->s3->upload('path/to/the/file.jpg', [
     'CacheControl' => 'max-age=' . strtotime('+1 year')  // Add cache controler options
 ]);
 ```
+
+### Object Ownership / ACL
+
+By default files are uploaded with the `public-read` ACL. Buckets created with the "Bucket owner enforced" Object
+Ownership setting have ACLs disabled, and passing any ACL will make the upload fail with `AccessControlListNotSupported`.
+Set `acl` to `false` to omit the ACL parameter entirely for those buckets:
+
+```php
+'s3' => [
+    'class' => \indielab\yii2s3\S3::class,
+    'bucket' => 'mybucket',
+    'key' => 'KEY',
+    'secret' => 'SECRET',
+    'region' => 'eu-central-1',
+    'acl' => false, // omit the ACL parameter (required for buckets with ACLs disabled)
+],
+```
