@@ -5,6 +5,7 @@ namespace indielab\yii2s3;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use GuzzleHttp\Psr7\Stream;
+use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
@@ -89,6 +90,7 @@ class S3 extends Component
         $key = ArrayHelper::remove($options, 'Key', pathinfo($filePath, PATHINFO_BASENAME));
 
         if (!$override && $this->find($key)) {
+            Yii::warning("Skipped upload for key '{$key}' to bucket '{$this->bucket}': the file already exists and the 'override' option is not enabled.", __METHOD__);
             return false;
         }
 
@@ -108,8 +110,9 @@ class S3 extends Component
                 return (string) $objectUrl;
             }
 
-        } catch (S3Exception) {
-
+            Yii::error("Failed to upload file '{$filePath}' as key '{$key}' to bucket '{$this->bucket}': putObject succeeded but the response did not contain an ObjectURL.", __METHOD__);
+        } catch (S3Exception $e) {
+            Yii::error("Failed to upload file '{$filePath}' as key '{$key}' to bucket '{$this->bucket}' (AWS error '{$e->getAwsErrorCode()}'): {$e->getMessage()}", __METHOD__);
         }
 
         return false;
