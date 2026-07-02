@@ -23,6 +23,22 @@ The Composer constraint changed from `^8.2` to `^8.4`:
  }
 ```
 
+### Raised aws/aws-sdk-php floor
+
+The `aws/aws-sdk-php` requirement was raised from `^3.0` to `^3.387`:
+
+```diff
+ "require": {
+     "php": "^8.4",
+-    "aws/aws-sdk-php": "^3.0",
++    "aws/aws-sdk-php": "^3.387",
+     "yiisoft/yii2": "^2.0"
+ }
+```
+
+This only raises the minimum; the SDK stays within the `3.x` line. `composer update` will pull the latest compatible
+release.
+
 ### How to upgrade
 
 1. Make sure your runtime and CI run on PHP 8.4 or 8.5.

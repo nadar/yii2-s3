@@ -16,7 +16,7 @@
     ],
     "require": {
         "php" : "^8.4",
-        "aws/aws-sdk-php": "^3.0",
+        "aws/aws-sdk-php": "^3.387",
         "yiisoft/yii2": "^2.0"
     },
     "require-dev": {
